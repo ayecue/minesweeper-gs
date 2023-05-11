@@ -1,0 +1,31 @@
+import_code("/root/helper.src":"./helpers.src")
+import_code("/root/view-board.src":"./view-board.src")
+
+main = function(size, difficulty)
+  clear_screen
+
+  board = (new ViewBoard).constructor(size, difficulty)
+  key = ""
+
+  board.printViewBoardToConsole
+
+  while (not board.isGameOver)
+    key = user_input("Ready for input", false, true)
+
+    if (key == "UpArrow") then
+      board.moveCursor("up")
+    else if (key == "DownArrow") then
+      board.moveCursor("down")
+    else if (key == "RightArrow") then
+      board.moveCursor("right")
+    else if (key == "LeftArrow") then
+      board.moveCursor("left")
+    else if (key == " ") then
+      board.uncoverSpace
+    else if (key == "x") then
+      board.markSpace
+    end if
+  end while
+end function
+
+promptUserForInputs(@main);

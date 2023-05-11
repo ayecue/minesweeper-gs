@@ -1,0 +1,216 @@
+import_code("/root/mine-board.src":"./mine-board.src")
+
+ViewBoard = new MineBoard
+ViewBoard.CLASS_ID = "ViewBoard"
+
+ViewBoard.constructor = function(self, size, difficulty)
+  super.constructor(size, difficulty)
+
+  self.cursor = "_"
+  self.marker = char(9635)
+  self.uncoveredSpace = " "
+  self.coveredSpace = char(9634)
+
+  self.viewBoard = self.generateNewViewBoard
+  self.uncoveredCount = 0
+  self.winningUncoveredCount = self.totalNumOfSquares - self.numberOfMines
+  self.cursorRow = 0
+  self.cursorColumn = 0
+  self.gameOver = false
+
+  return self
+end function
+
+ViewBoard.generateNewViewBoard = function(self)
+  viewBoard = range(0, self.size - 1)
+
+  for i in range(0, self.size - 1)
+    viewBoard[i] = range(0, self.size - 1)
+    for j in range(0, self.size - 1)
+      viewBoard[i][j] = self.coveredSpace
+    end for
+  end for
+
+  return viewBoard
+end function
+
+ViewBoard.clone = function(self)
+  size = self.size
+  viewBoard = range(0, size - 1)
+
+  for i in range(0, size - 1)
+    viewBoard[i] = range(0, size - 1)
+    for j in range(0, size - 1)
+      viewBoard[i][j] = self.viewBoard[i][j]
+    end for
+  end for
+
+  return viewBoard
+end function
+
+ViewBoard.printViewBoardToConsole = function(self, showCursor = true)
+  viewBoard = self.clone
+  row = self.cursorRow
+  col = self.cursorColumn
+  size = self.size
+
+  if (showCursor) then
+    viewBoard[row][col] = self.cursor
+  end if
+
+  output = []
+
+  for row in viewBoard
+    output.push(row.join(" "))
+  end for
+
+  clear_screen
+  self.printInstructions
+  print(output.join(char(10)))
+end function
+
+ViewBoard.moveCursor = function(self, direction)
+  row = self.cursorRow
+  col = self.cursorColumn
+
+  if (direction == "up" and self.isInBound(row - 1, col)) then
+    self.cursorRow = row - 1
+  else if (direction == "down" and self.isInBound(row + 1, col)) then
+    self.cursorRow = row + 1
+  else if (direction == "left" and self.isInBound(row, col - 1)) then
+    self.cursorColumn = col - 1
+  else if (direction == "right" and self.isInBound(row, col + 1)) then
+    self.cursorColumn = col + 1
+  end if
+
+  self.printViewBoardToConsole
+end function
+
+ViewBoard.markSpace = function(self)
+  board = self.viewBoard
+  row = self.cursorRow
+  col = self.cursorColumn
+
+  if (board[row][col] == self.coveredSpace) then
+      board[row][col] = self.marker;
+  else if (board[row][col] == self.marker) then
+      board[row][col] = self.coveredSpace;
+  end if
+
+  self.printViewBoardToConsole(false);
+end function
+
+ViewBoard.isSpaceMarked = function(self)
+  board = self.viewBoard
+  row = self.cursorRow
+  col = self.cursorColumn
+
+  return board[row][col] == self.marker
+end function
+
+ViewBoard.uncoverSpace = function(self)
+  mineBoard = self.mineBoard
+  row = self.cursorRow
+  col = self.cursorColumn
+  viewBoard = self.viewBoard
+  size = self.size
+  cursor = self.cursor
+  marker = self.marker
+  coveredSpace = self.coveredSpace
+  bomb = self.bomb
+
+  if (self.isSpaceMarked) then return
+
+  if (mineBoard[row][col] != 0) then
+    viewBoard[row][col] = mineBoard[row][col]
+    self.uncoveredCount += 1
+    self.printViewBoardToConsole(false)
+    self.checkForWinGame
+  else
+    uncoverAdjacentSpaces = function(self, row, col)
+      viewBoard[row][col] = self.uncoveredSpace
+      self.uncoveredCount += 1
+
+      for relIndex in self.relationalIndicesMap
+        rowToCheck = row + relIndex.row
+        colToCheck = col + relIndex.col
+
+        if (not self.isInBound(rowToCheck, colToCheck)) then continue
+        if (viewBoard[rowToCheck][colToCheck] != self.coveredSpace) then continue
+        if (mineBoard[rowToCheck][colToCheck] == self.bomb) then continue
+        if (mineBoard[rowToCheck][colToCheck] > 0) then
+          viewBoard[rowToCheck][colToCheck] = mineBoard[rowToCheck][colToCheck]
+          self.uncoveredCount += 1
+        else
+          uncoverAdjacentSpaces(self, rowToCheck, colToCheck)
+        end if
+      end for
+    end function
+
+    uncoverAdjacentSpaces(self, row, col)
+    self.printViewBoardToConsole(false)
+    self.checkForWinGame
+  end if
+end function
+
+ViewBoard.checkForWinGame = function(self)
+  if (self.uncoveredCount >= self.winningUncoveredCount) then
+    self.winGame
+  end if
+end function
+
+ViewBoard.loseGame = function(self)
+  output = []
+
+  for row in self.mineBoard
+    line = []
+    for item in row if (item == 0) then line.push(" ") else line.push(item)
+
+    output.push(line.join(" "))
+  end for
+
+  clear_screen
+  self.printInstructions
+  print(output.join(char(10)))
+  print("You loose!")
+
+  self.gameOver = true
+end function
+
+ViewBoard.winGame = function(self)
+  output = []
+
+  for row in self.mineBoard
+    line = []
+    for item in row 
+      if (item == 0) then
+        line.push(" ")
+      else if (item == self.bomb) then
+        line.push(self.marker)
+      else
+        line.push(item)
+      end if
+    end for
+
+    output.push(line.join(" "))
+  end for
+
+  clear_screen
+  self.printInstructions
+  print(output.join(char(10)))
+  print("You win!")
+
+  self.gameOver = true
+end function
+
+ViewBoard.isGameOver = function(self)
+  return self.gameOver
+end function
+
+ViewBoard.printInstructions = function
+  print("Welcome to Minesweeper for GreyScript!
+  Use the arrow keys to move around.
+  Use the 'x' key to flag a box and the 'space' key to uncover one.` +
+  Press 'ctr + c' to quit,'r' to restart, and 'n' for a new game` +
+  Press 'h' to hide these instructions.")
+end function

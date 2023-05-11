@@ -1,0 +1,71 @@
+import_code("/root/board.src":"./board.src")
+
+MineBoard = new Board
+MineBoard.CLASS_ID = "MineBoard"
+
+MineBoard.constructor = function(self, size, difficulty = 1)
+  super.constructor(size)
+  self.difficulty = difficulty
+  self.bomb = char(9762)
+  self.numberOfMines = self.determineNumberOfMines
+  self.mineBoard = self.placeMinesOnBoard
+  return self
+end function
+
+MineBoard.determineNumberOfMines = function(self)
+  difficulty = self.difficulty
+  totalNumOfSquares = self.totalNumOfSquares
+
+  if (difficulty == 2) then
+    return floor(totalNumOfSquares * 0.1)
+  else if (difficulty == 3) then
+    return floor(totalNumOfSquares * 0.125)
+  end if
+
+  return floor(totalNumOfSquares * 0.075)
+end function
+
+MineBoard.placeMinesOnBoard = function(self)
+  size = self.size
+  numberOfMines = self.numberOfMines
+  board = self.generateEmptyBoard
+  i = 0
+
+  while (i < numberOfMines)
+    row = floor(rnd * size)
+    column = floor(rnd * size)
+
+    if (board[row][column] == 0) then
+      board[row][column] = self.bomb
+      i += 1
+    end if
+  end while
+
+  self.determineMineProximityNumbers(board)
+
+  return board
+end function
+
+MineBoard.determineMineProximityNumbers = function(self, board)
+  size = self.size
+
+  for row in range(0, size - 1)
+    for column in range(0, size - 1)
+      if (board[row][column] == self.bomb) then continue
+
+      numOfBombsInVicinity = 0
+
+      for relIndex in self.relationalIndicesMap
+        rowToCheck = row + relIndex.row
+        colToCheck = column + relIndex.col
+
+        if (not self.isInBound(rowToCheck, colToCheck)) then continue
+        if (board[rowToCheck][colToCheck] == self.bomb) then
+          numOfBombsInVicinity += 1
+        end if
+      end for
+
+      board[row][column] = numOfBombsInVicinity;
+    end for
+  end for
+end function
