@@ -1,5 +1,5 @@
-import_code("/root/helper.src":"./helpers.src")
-import_code("/root/view-board.src":"./view-board.src")
+import_code("/root/helpers.src":"./helpers.src")
+import_code("/root/viewBoard.src":"./viewBoard.src")
 
 main = function(size, difficulty)
   clear_screen
@@ -10,7 +10,7 @@ main = function(size, difficulty)
   board.printViewBoardToConsole
 
   while (not board.isGameOver)
-    key = user_input("Ready for input", false, true)
+    key = user_input(">", false, true)
 
     if (key == "UpArrow") then
       board.moveCursor("up")
@@ -24,6 +24,10 @@ main = function(size, difficulty)
       board.uncoverSpace
     else if (key == "x") then
       board.markSpace
+    else if (key == "q") then
+      exit("bye bye")
+    else
+      board.printViewBoardToConsole
     end if
   end while
 end function

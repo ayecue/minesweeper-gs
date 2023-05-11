@@ -6,7 +6,7 @@ MineBoard.CLASS_ID = "MineBoard"
 MineBoard.constructor = function(self, size, difficulty = 1)
   super.constructor(size)
   self.difficulty = difficulty
-  self.bomb = char(9762)
+  self.bomb = char(1161)
   self.numberOfMines = self.determineNumberOfMines
   self.mineBoard = self.placeMinesOnBoard
   return self

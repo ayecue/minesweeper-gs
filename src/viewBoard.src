@@ -1,4 +1,4 @@
-import_code("/root/mine-board.src":"./mine-board.src")
+import_code("/root/mineBoard.src":"./mineBoard.src")
 
 ViewBoard = new MineBoard
 ViewBoard.CLASS_ID = "ViewBoard"
@@ -6,10 +6,9 @@ ViewBoard.CLASS_ID = "ViewBoard"
 ViewBoard.constructor = function(self, size, difficulty)
   super.constructor(size, difficulty)
 
-  self.cursor = "_"
-  self.marker = char(9635)
+  self.marker = "<color=yellow>" + char(35) + "</color>"
   self.uncoveredSpace = " "
-  self.coveredSpace = char(9634)
+  self.coveredSpace = char(35)
 
   self.viewBoard = self.generateNewViewBoard
   self.uncoveredCount = 0
@@ -48,15 +47,13 @@ ViewBoard.clone = function(self)
   return viewBoard
 end function
 
-ViewBoard.printViewBoardToConsole = function(self, showCursor = true)
+ViewBoard.printViewBoardToConsole = function(self)
   viewBoard = self.clone
   row = self.cursorRow
   col = self.cursorColumn
   size = self.size
 
-  if (showCursor) then
-    viewBoard[row][col] = self.cursor
-  end if
+  viewBoard[row][col] = "<mark=yellow>" + viewBoard[row][col] + "</mark>"
 
   output = []
 
@@ -97,7 +94,7 @@ ViewBoard.markSpace = function(self)
       board[row][col] = self.coveredSpace;
   end if
 
-  self.printViewBoardToConsole(false);
+  self.printViewBoardToConsole;
 end function
 
 ViewBoard.isSpaceMarked = function(self)
@@ -114,17 +111,21 @@ ViewBoard.uncoverSpace = function(self)
   col = self.cursorColumn
   viewBoard = self.viewBoard
   size = self.size
-  cursor = self.cursor
   marker = self.marker
   coveredSpace = self.coveredSpace
   bomb = self.bomb
 
   if (self.isSpaceMarked) then return
 
+  if (mineBoard[row][col] == self.bomb) then
+    self.loseGame
+    return
+  end if
+
   if (mineBoard[row][col] != 0) then
     viewBoard[row][col] = mineBoard[row][col]
     self.uncoveredCount += 1
-    self.printViewBoardToConsole(false)
+    self.printViewBoardToConsole
     self.checkForWinGame
   else
     uncoverAdjacentSpaces = function(self, row, col)
@@ -148,7 +149,7 @@ ViewBoard.uncoverSpace = function(self)
     end function
 
     uncoverAdjacentSpaces(self, row, col)
-    self.printViewBoardToConsole(false)
+    self.printViewBoardToConsole
     self.checkForWinGame
   end if
 end function
@@ -210,7 +211,6 @@ end function
 ViewBoard.printInstructions = function
   print("Welcome to Minesweeper for GreyScript!
   Use the arrow keys to move around.
-  Use the 'x' key to flag a box and the 'space' key to uncover one.` +
-  Press 'ctr + c' to quit,'r' to restart, and 'n' for a new game` +
-  Press 'h' to hide these instructions.")
+  Use the 'x' key to flag a box and the 'space' key to uncover one.
+  Press 'q' to quit.")
 end function
