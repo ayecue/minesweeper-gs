@@ -53,7 +53,7 @@ ViewBoard.printViewBoardToConsole = function(self)
   col = self.cursorColumn
   size = self.size
 
-  viewBoard[row][col] = "<mark=yellow>" + viewBoard[row][col] + "</mark>"
+  viewBoard[row][col] = "<mark=#00FF55>" + viewBoard[row][col] + "</mark>"
 
   output = []
 
