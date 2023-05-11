@@ -1,4 +1,5 @@
 import_code("/root/board.src":"./board.src")
+import_code("/root/constants.src":"./constants.src")
 
 MineBoard = new Board
 MineBoard.CLASS_ID = "MineBoard"
@@ -6,7 +7,7 @@ MineBoard.CLASS_ID = "MineBoard"
 MineBoard.constructor = function(self, size, difficulty = 1)
   super.constructor(size)
   self.difficulty = difficulty
-  self.bomb = char(1161)
+  self.bomb = char(BOMB_CODE.to_int)
   self.numberOfMines = self.determineNumberOfMines
   self.mineBoard = self.placeMinesOnBoard
   return self

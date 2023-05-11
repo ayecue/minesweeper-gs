@@ -1,0 +1,4 @@
+FIELD_MARKED_COLOR = #envar fieldMarkedColor;
+BOMB_CODE = #envar bombCode;
+FIELD_CODE = #envar fieldCode;
+CURSOR_COLOR = #envar cursorColor;

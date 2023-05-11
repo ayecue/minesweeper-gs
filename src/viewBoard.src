@@ -1,4 +1,5 @@
 import_code("/root/mineBoard.src":"./mineBoard.src")
+import_code("/root/constants.src":"./constants.src")
 
 ViewBoard = new MineBoard
 ViewBoard.CLASS_ID = "ViewBoard"
@@ -6,9 +7,9 @@ ViewBoard.CLASS_ID = "ViewBoard"
 ViewBoard.constructor = function(self, size, difficulty)
   super.constructor(size, difficulty)
 
-  self.marker = "<color=yellow>" + char(35) + "</color>"
+  self.marker = "<color=" + FIELD_MARKED_COLOR + ">" + char(FIELD_CODE.to_int) + "</color>"
   self.uncoveredSpace = " "
-  self.coveredSpace = char(35)
+  self.coveredSpace = char(FIELD_CODE.to_int)
 
   self.viewBoard = self.generateNewViewBoard
   self.uncoveredCount = 0
@@ -53,7 +54,7 @@ ViewBoard.printViewBoardToConsole = function(self)
   col = self.cursorColumn
   size = self.size
 
-  viewBoard[row][col] = "<mark=#00FF55>" + viewBoard[row][col] + "</mark>"
+  viewBoard[row][col] = "<mark=" + CURSOR_COLOR + ">" + viewBoard[row][col] + "</mark>"
 
   output = []
 
