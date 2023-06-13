@@ -1,5 +1,5 @@
-import_code("/root/mineBoard.src":"./mineBoard.src")
-import_code("/root/constants.src":"./constants.src")
+import_code("./mineBoard.src")
+import_code("./constants.src")
 
 ViewBoard = new MineBoard
 ViewBoard.CLASS_ID = "ViewBoard"

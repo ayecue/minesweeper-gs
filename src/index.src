@@ -1,5 +1,5 @@
-import_code("/root/helpers.src":"./helpers.src")
-import_code("/root/viewBoard.src":"./viewBoard.src")
+import_code("./helpers.src")
+import_code("./viewBoard.src")
 
 main = function(size, difficulty)
   clear_screen
