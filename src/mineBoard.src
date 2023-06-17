@@ -2,7 +2,7 @@ import_code("./board.src")
 import_code("./constants.src")
 
 MineBoard = new Board
-MineBoard.CLASS_ID = "MineBoard"
+MineBoard.classID = "MineBoard"
 
 MineBoard.constructor = function(self, size, difficulty = 1)
   super.constructor(size)

@@ -1,5 +1,5 @@
 Board = {}
-Board.CLASS_ID = "Board"
+Board.classID = "Board"
 
 Board.constructor = function(self, size = 20)
   self.size = size
